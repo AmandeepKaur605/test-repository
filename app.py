@@ -10,7 +10,13 @@ from resources.store import Store, StoreList
 
 app=Flask(__name__)
 app.secret_key='aman'
-app.config['SQLALCHEMY_DATABASE_URI']=os.environ.get('DATABASE_URL', 'sqlite:///data.db')
+uri = os.getenv("DATABASE_URL")
+if uri.startswith("postgres://"):    
+     uri = uri.replace("postgres://", "postgresql://", 1)
+if uri:
+    app.config['SQLALCHEMY_DATABASE_URI']= uri
+else:
+    app.config['SQLALCHEMY_DATABASE_URI']= 'sqlite:///data.db'
 app.config['SQLAlCHEMY_TRACK_MODIFICATIONS']=False
 api= Api(app)
 
